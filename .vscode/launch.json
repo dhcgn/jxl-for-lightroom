@@ -1,0 +1,22 @@
+{
+    // Verwendet IntelliSense zum Ermitteln möglicher Attribute.
+    // Zeigen Sie auf vorhandene Attribute, um die zugehörigen Beschreibungen anzuzeigen.
+    // Weitere Informationen finden Sie unter https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch Package",
+            "type": "go",
+            "args": [
+                "C:\\Users\\OneDrive\\Wedding\\DSLR_1\\Image1.jpg",
+                "C:\\Users\\OneDrive\\Wedding\\DSLR_1\\Image2.png",
+                "C:\\Users\\OneDrive\\Wedding\\DSLR_1\\Image3.JPEG",
+                "C:\\Users\\OneDrive\\Wedding\\DSLR_1\\Image4",
+                "C:\\Users\\OneDrive\\Wedding\\DSLR_1\\Image5.tiff",
+            ],
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceRoot}/cmd/jxl-for-lightroom/",
+        }
+    ]
+}
