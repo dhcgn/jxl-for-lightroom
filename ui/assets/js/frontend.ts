@@ -65,12 +65,18 @@ async function updateProgress() {
 // for (; ;) {
 //     updateProgress()
 // }
-
+let lastLog: string = "-1"
 async function updateLog() {
     await sleep(100);
-    const log = document.getElementById("logts") as HTMLIFrameElement;
+    const log = document.getElementById("logts");
+    let logContent = await getUpdate();
+    if (logContent == lastLog)
+        return
+
+    lastLog = logContent
+
     if (log) {
-        log.src = log.src 
+        log.innerText = logContent;
     }
 }
 
@@ -88,3 +94,39 @@ async function updateLog() {
     }
     // `text` is not available here
 })();
+
+let stopGetUpdate = false
+async function getUpdate(){
+    if (stopGetUpdate)
+    return
+
+try {
+    // 👇️ const response: Response
+    const response = await fetch('/log', {
+        method: 'GET',
+        headers: {
+            Accept: 'application/text',
+        },
+    });
+
+    if (!response.ok) {
+        throw new Error(`Error! status: ${response.status}`);
+    }
+
+    // 👇️ const result: GetUsersResponse
+    const result = await response.text();
+
+    console.log('result is: ', result);
+
+    return result;
+} catch (error) {
+    stopGetUpdate = true
+    if (error instanceof Error) {
+        console.log('error message: ', error.message);
+        return error.message;
+    } else {
+        console.log('unexpected error: ', error);
+        return 'An unexpected error occurred';
+    }
+}
+}

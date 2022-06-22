@@ -1,1 +1,7 @@
-{"Libjxl":{"Effort":7,"Quality":81,"LosslessTranscoding":false}}
+{
+  "Libjxl": {
+    "Effort": 7,
+    "Quality": 99,
+    "LosslessJpegTranscoding": false
+  }
+}

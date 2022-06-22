@@ -113,17 +113,24 @@ function updateProgress() {
 // for (; ;) {
 //     updateProgress()
 // }
+var lastLog = "-1";
 function updateLog() {
     return __awaiter(this, void 0, void 0, function () {
-        var log;
+        var log, logContent;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, sleep(100)];
                 case 1:
                     _a.sent();
                     log = document.getElementById("logts");
+                    return [4 /*yield*/, getUpdate()];
+                case 2:
+                    logContent = _a.sent();
+                    if (logContent == lastLog)
+                        return [2 /*return*/];
+                    lastLog = logContent;
                     if (log) {
-                        log.src = log.src;
+                        log.innerText = logContent;
                     }
                     return [2 /*return*/];
             }
@@ -156,3 +163,48 @@ function updateLog() {
         }
     });
 }); })();
+var stopGetUpdate = false;
+function getUpdate() {
+    return __awaiter(this, void 0, void 0, function () {
+        var response, result, error_2;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    if (stopGetUpdate)
+                        return [2 /*return*/];
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 4, , 5]);
+                    return [4 /*yield*/, fetch('/log', {
+                            method: 'GET',
+                            headers: {
+                                Accept: 'application/text'
+                            }
+                        })];
+                case 2:
+                    response = _a.sent();
+                    if (!response.ok) {
+                        throw new Error("Error! status: ".concat(response.status));
+                    }
+                    return [4 /*yield*/, response.text()];
+                case 3:
+                    result = _a.sent();
+                    console.log('result is: ', result);
+                    return [2 /*return*/, result];
+                case 4:
+                    error_2 = _a.sent();
+                    stopGetUpdate = true;
+                    if (error_2 instanceof Error) {
+                        console.log('error message: ', error_2.message);
+                        return [2 /*return*/, error_2.message];
+                    }
+                    else {
+                        console.log('unexpected error: ', error_2);
+                        return [2 /*return*/, 'An unexpected error occurred'];
+                    }
+                    return [3 /*break*/, 5];
+                case 5: return [2 /*return*/];
+            }
+        });
+    });
+}

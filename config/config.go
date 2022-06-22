@@ -49,7 +49,7 @@ func (*config) SetQuality(q int) error {
 // SetLosslessTranscoding implements Config
 func (*config) SetLosslessTranscoding(q bool) error {
 	cfg := readConfig()
-	cfg.Libjxl.LosslessTranscoding = q
+	cfg.Libjxl.LosslessJpegTranscoding = q
 
 	err := writeConfig(cfg)
 
@@ -68,7 +68,7 @@ func (*config) GetEffort() int {
 
 // GetEffort implements Config
 func (*config) GetLosslessTranscoding() bool {
-	return readConfig().Libjxl.LosslessTranscoding
+	return readConfig().Libjxl.LosslessJpegTranscoding
 }
 
 var (
@@ -95,7 +95,7 @@ func readConfig() Configuration {
 }
 
 func writeConfig(cfg Configuration) error {
-	j, err := json.Marshal(cfg)
+	j, err := json.MarshalIndent(cfg, "", "  ")
 	if err != nil {
 		return err
 	}
@@ -106,8 +106,9 @@ func writeConfig(cfg Configuration) error {
 func createStandardConfiguration() Configuration {
 	return Configuration{
 		Libjxl: Libjxl{
-			Effort:  7,
-			Quality: 80,
+			Effort:                  7,
+			Quality:                 80,
+			LosslessJpegTranscoding: true,
 		},
 	}
 }
@@ -117,9 +118,9 @@ type Configuration struct {
 }
 
 type Libjxl struct {
-	Effort              int
-	Quality             int
-	LosslessTranscoding bool
+	Effort                  int
+	Quality                 int
+	LosslessJpegTranscoding bool
 }
 
 func NewConfig() Config {

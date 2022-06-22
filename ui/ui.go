@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"io/fs"
 	"log"
+	"net"
 	"net/http"
 	"os/exec"
 	"path/filepath"
@@ -128,6 +129,22 @@ func (u *ui) readFiles(files []string) {
 	}
 }
 
+func getFreeTcpPort() int {
+	port := 49152
+
+	for i := 0; i < 24; i++ {
+		listener, err := net.Listen("tcp", fmt.Sprintf(":%v", port))
+		if err == nil {
+			listener.Close()
+			return port
+		} else {
+			port++
+		}
+	}
+
+	panic("NOT FREE PORT TO START SERVER")
+}
+
 // ShowDialog implements Ui
 func (ui *ui) ShowDialog(files []string) error {
 
@@ -148,9 +165,11 @@ func (ui *ui) ShowDialog(files []string) error {
 	fs := http.FileServer(http.FS(htmlContent))
 	r.PathPrefix("/").Handler(fs)
 
+	port := getFreeTcpPort()
+
 	srv := &http.Server{
 		Handler:      r,
-		Addr:         "127.0.0.1:37700",
+		Addr:         fmt.Sprintf("127.0.0.1:%v", port),
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 	}
@@ -163,7 +182,7 @@ func (ui *ui) ShowDialog(files []string) error {
 
 	go func() {
 		cmd := "cmd"
-		args := []string{"/c", "start", "http://127.0.0.1:37700"}
+		args := []string{"/c", "start", fmt.Sprintf("http://127.0.0.1:%v", port)}
 		exec.Command(cmd, args...).Start()
 	}()
 
