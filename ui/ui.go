@@ -33,11 +33,12 @@ type ui struct {
 }
 
 type PageData struct {
-	PageTitle        string
-	Quality          string
-	Effort           string
-	TotalValidImages string
-	Files            []File
+	PageTitle           string
+	Quality             string
+	LosslessTranscoding bool
+	Effort              string
+	TotalValidImages    string
+	Files               []File
 }
 
 type File struct {
@@ -50,11 +51,12 @@ func (ui ui) HomeHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(r.RequestURI)
 
 	data := PageData{
-		PageTitle:        "jxl for lightroom",
-		Files:            ui.Files,
-		Effort:           fmt.Sprintf("%v", ui.config.GetEffort()),
-		Quality:          fmt.Sprintf("%v", ui.config.GetQuality()),
-		TotalValidImages: fmt.Sprintf("%d", len(ui.Files)),
+		PageTitle:           "jxl for lightroom",
+		Files:               ui.Files,
+		Effort:              fmt.Sprintf("%v", ui.config.GetEffort()),
+		Quality:             fmt.Sprintf("%v", ui.config.GetQuality()),
+		LosslessTranscoding: ui.config.GetLosslessTranscoding(),
+		TotalValidImages:    fmt.Sprintf("%d", len(ui.Files)),
 	}
 
 	t, err := template.ParseFS(content, "assets/index.html")
@@ -70,7 +72,8 @@ func (ui ui) HomeHandler(w http.ResponseWriter, r *http.Request) {
 func (ui ui) SettingsHandler(w http.ResponseWriter, r *http.Request) {
 	q := r.FormValue("quality")
 	e := r.FormValue("effort")
-	log.Println("SettingsHandler", "Q:", q, "E:", e)
+	lt := r.FormValue("losslesstranscoding")
+	log.Println("SettingsHandler", "Q:", q, "E:", e, "LT:", lt)
 
 	if i, err := strconv.Atoi(q); err == nil {
 		ui.config.SetQuality(i)
@@ -78,6 +81,10 @@ func (ui ui) SettingsHandler(w http.ResponseWriter, r *http.Request) {
 
 	if i, err := strconv.Atoi(e); err == nil {
 		ui.config.SetEffort(i)
+	}
+
+	if i, err := strconv.ParseBool(lt); err == nil {
+		ui.config.SetLosslessTranscoding(i)
 	}
 
 	http.Redirect(w, r, "/", http.StatusMovedPermanently)

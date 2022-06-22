@@ -36,31 +36,37 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 var _this = this;
+var stopGetProgress = false;
 function getProgress() {
     return __awaiter(this, void 0, void 0, function () {
         var response, result, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    _a.trys.push([0, 3, , 4]);
+                    if (stopGetProgress)
+                        return [2 /*return*/];
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 4, , 5]);
                     return [4 /*yield*/, fetch('/progress', {
                             method: 'GET',
                             headers: {
                                 Accept: 'application/text'
                             }
                         })];
-                case 1:
+                case 2:
                     response = _a.sent();
                     if (!response.ok) {
                         throw new Error("Error! status: ".concat(response.status));
                     }
                     return [4 /*yield*/, response.text()];
-                case 2:
+                case 3:
                     result = _a.sent();
                     console.log('result is: ', result);
                     return [2 /*return*/, result];
-                case 3:
+                case 4:
                     error_1 = _a.sent();
+                    stopGetProgress = true;
                     if (error_1 instanceof Error) {
                         console.log('error message: ', error_1.message);
                         return [2 /*return*/, error_1.message];
@@ -69,8 +75,8 @@ function getProgress() {
                         console.log('unexpected error: ', error_1);
                         return [2 /*return*/, 'An unexpected error occurred'];
                     }
-                    return [3 /*break*/, 4];
-                case 4: return [2 /*return*/];
+                    return [3 /*break*/, 5];
+                case 5: return [2 /*return*/];
             }
         });
     });

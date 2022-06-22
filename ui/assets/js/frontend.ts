@@ -1,6 +1,10 @@
 // @ts-check
 
+let stopGetProgress = false
 async function getProgress() {
+    if (stopGetProgress)
+        return
+
     try {
         // 👇️ const response: Response
         const response = await fetch('/progress', {
@@ -21,6 +25,7 @@ async function getProgress() {
 
         return result;
     } catch (error) {
+        stopGetProgress = true
         if (error instanceof Error) {
             console.log('error message: ', error.message);
             return error.message;

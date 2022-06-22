@@ -13,6 +13,8 @@ type Config interface {
 	GetQuality() int
 	SetQuality(int) error
 	SetEffort(int) error
+	SetLosslessTranscoding(bool) error
+	GetLosslessTranscoding() bool
 }
 type config struct{}
 
@@ -44,6 +46,16 @@ func (*config) SetQuality(q int) error {
 	return err
 }
 
+// SetLosslessTranscoding implements Config
+func (*config) SetLosslessTranscoding(q bool) error {
+	cfg := readConfig()
+	cfg.Libjxl.LosslessTranscoding = q
+
+	err := writeConfig(cfg)
+
+	return err
+}
+
 // GetQuality implements Config
 func (*config) GetQuality() int {
 	return readConfig().Libjxl.Quality
@@ -52,6 +64,11 @@ func (*config) GetQuality() int {
 // GetEffort implements Config
 func (*config) GetEffort() int {
 	return readConfig().Libjxl.Effort
+}
+
+// GetEffort implements Config
+func (*config) GetLosslessTranscoding() bool {
+	return readConfig().Libjxl.LosslessTranscoding
 }
 
 var (
@@ -100,8 +117,9 @@ type Configuration struct {
 }
 
 type Libjxl struct {
-	Effort  int
-	Quality int
+	Effort              int
+	Quality             int
+	LosslessTranscoding bool
 }
 
 func NewConfig() Config {
