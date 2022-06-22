@@ -43,10 +43,10 @@ func (c *converter) Convert(files []string, progress chan<- int) (sync.WaitGroup
 	wg.Add(1)
 
 	go func(wg sync.WaitGroup, progress chan<- int) {
-		for i := 0; i < 100; i++ {
+		for i := 0; i <= 100; i++ {
 			log.Println("Convert", "progress:", i)
 			progress <- i
-			<-time.After(10 * time.Millisecond)
+			<-time.After(20 * time.Millisecond)
 		}
 
 		wg.Done()

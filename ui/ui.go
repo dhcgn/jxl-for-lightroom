@@ -119,7 +119,7 @@ func (u *ui) readFiles(files []string) {
 }
 
 // ShowDialog implements Ui
-func (ui ui) ShowDialog(files []string) error {
+func (ui *ui) ShowDialog(files []string) error {
 
 	ui.readFiles(files)
 
@@ -127,6 +127,9 @@ func (ui ui) ShowDialog(files []string) error {
 	r.HandleFunc("/", ui.HomeHandler)
 	r.HandleFunc("/settings", ui.SettingsHandler)
 	r.HandleFunc("/convert", ui.ConvertHandler)
+	r.HandleFunc("/progress", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "%v", ui.lastProgressValue)
+	})
 
 	htmlContent, _ := fs.Sub(content, "assets")
 	fs := http.FileServer(http.FS(htmlContent))
@@ -155,22 +158,23 @@ func (ui ui) ShowDialog(files []string) error {
 }
 
 func NewUi(c converter.Converter, cfg config.Config) Ui {
-	ui := &ui{
+	u := &ui{
 		converter: c,
 		config:    cfg,
 		progress:  make(chan int),
 	}
 
-	go func() {
+	go func(u *ui) {
 		for {
 			select {
-			case p := <-ui.progress:
-				ui.lastProgressValue = p
+			case p := <-u.progress:
+				log.Println("set lastProgressValue with:", p)
+				u.lastProgressValue = p
 			case <-time.After(1 * time.Second):
 				// DEBUG
 			}
 		}
-	}()
+	}(u)
 
-	return ui
+	return u
 }
