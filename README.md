@@ -23,7 +23,7 @@ See: https://github.com/dhcgn/jxl-for-lightroom/issues
 
 > Currently only works on Windows
 
-Just copy the file `jxl-for-lightroom.exe` to some location and add this location to your export profile.
+Just copy the file `jxl-for-lightroom.exe` (see [Releases](https://github.com/dhcgn/jxl-for-lightroom/releases) and assets) to some location and add this location to your export profile.
 
 I prefer: `C:\Users\MyUserName\AppData\Roaming\Adobe\Lightroom\Modules\jxl-for-lightroom\jxl-for-lightroom.exe`
 
