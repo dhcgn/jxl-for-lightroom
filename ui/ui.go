@@ -15,6 +15,7 @@ import (
 	"github.com/dhcgn/jxl-for-lightroom/config"
 	"github.com/dhcgn/jxl-for-lightroom/converter"
 	"github.com/gorilla/mux"
+	"gopkg.in/yaml.v3"
 )
 
 //go:embed assets/*
@@ -29,7 +30,9 @@ type ui struct {
 	config            config.Config
 	isBusy            bool
 	progress          chan int
+	encoderResults    chan converter.EncodeResult
 	lastProgressValue int
+	Log               string
 }
 
 type PageData struct {
@@ -98,7 +101,7 @@ func (ui ui) ConvertHandler(w http.ResponseWriter, r *http.Request) {
 		filenames = append(filenames, f.Path)
 	}
 
-	done, error := ui.converter.Convert(filenames, ui.progress)
+	done, error := ui.converter.Convert(filenames, ui.config.GetEffort(), ui.config.GetQuality(), ui.config.GetLosslessTranscoding(), ui.progress, ui.encoderResults)
 	log.Println("ConvertHandler", "done:", done, "error:", error)
 	if error != nil {
 		http.Redirect(w, r, "/", http.StatusMovedPermanently)
@@ -137,6 +140,9 @@ func (ui *ui) ShowDialog(files []string) error {
 	r.HandleFunc("/progress", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "%v", ui.lastProgressValue)
 	})
+	r.HandleFunc("/log", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "%v", ui.Log)
+	})
 
 	htmlContent, _ := fs.Sub(content, "assets")
 	fs := http.FileServer(http.FS(htmlContent))
@@ -166,9 +172,10 @@ func (ui *ui) ShowDialog(files []string) error {
 
 func NewUi(c converter.Converter, cfg config.Config) Ui {
 	u := &ui{
-		converter: c,
-		config:    cfg,
-		progress:  make(chan int),
+		converter:      c,
+		config:         cfg,
+		progress:       make(chan int),
+		encoderResults: make(chan converter.EncodeResult),
 	}
 
 	go func(u *ui) {
@@ -177,6 +184,10 @@ func NewUi(c converter.Converter, cfg config.Config) Ui {
 			case p := <-u.progress:
 				log.Println("set lastProgressValue with:", p)
 				u.lastProgressValue = p
+			case p := <-u.encoderResults:
+				data, _ := yaml.Marshal(p)
+				u.Log += fmt.Sprintf("%s\n", data)
+				log.Println(u.Log)
 			case <-time.After(1 * time.Second):
 				// DEBUG
 			}

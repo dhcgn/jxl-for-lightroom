@@ -66,12 +66,22 @@ async function updateProgress() {
 //     updateProgress()
 // }
 
+async function updateLog() {
+    await sleep(100);
+    const log = document.getElementById("logts") as HTMLIFrameElement;
+    if (log) {
+        log.src = log.src 
+    }
+}
+
+
 (async () => {
     try {
         for (; ;) {
             
             // await sleep(100);
             await updateProgress()
+            await updateLog()
         }
     } catch (e) {
         // Deal with the fact the chain failed

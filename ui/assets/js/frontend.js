@@ -113,12 +113,29 @@ function updateProgress() {
 // for (; ;) {
 //     updateProgress()
 // }
+function updateLog() {
+    return __awaiter(this, void 0, void 0, function () {
+        var log;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, sleep(100)];
+                case 1:
+                    _a.sent();
+                    log = document.getElementById("logts");
+                    if (log) {
+                        log.src = log.src;
+                    }
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
 (function () { return __awaiter(_this, void 0, void 0, function () {
     var e_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                _a.trys.push([0, 5, , 6]);
+                _a.trys.push([0, 6, , 7]);
                 _a.label = 1;
             case 1: 
             // await sleep(100);
@@ -126,13 +143,16 @@ function updateProgress() {
             case 2:
                 // await sleep(100);
                 _a.sent();
-                _a.label = 3;
-            case 3: return [3 /*break*/, 1];
-            case 4: return [3 /*break*/, 6];
-            case 5:
+                return [4 /*yield*/, updateLog()];
+            case 3:
+                _a.sent();
+                _a.label = 4;
+            case 4: return [3 /*break*/, 1];
+            case 5: return [3 /*break*/, 7];
+            case 6:
                 e_1 = _a.sent();
-                return [3 /*break*/, 6];
-            case 6: return [2 /*return*/];
+                return [3 /*break*/, 7];
+            case 7: return [2 /*return*/];
         }
     });
 }); })();
