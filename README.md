@@ -7,7 +7,7 @@ Create JpegXl files from Lightroom with user export
 
 ![NVIDIA_Share_tRK0dthZOz](https://user-images.githubusercontent.com/6566207/175048881-752dff3f-ebec-474e-8806-7aac51d33574.gif)
 
-## Motvation
+## Motivation
 
 I want to extend the popularity of the [JpegXl](https://jpegxl.com/) format, hopefully this format will be soon supported by OpenSource Community, Google, Apple and Microsoft.
 
@@ -35,9 +35,12 @@ I prefer: `C:\Users\MyUserName\AppData\Roaming\Adobe\Lightroom\Modules\jxl-for-l
       2. `Application` set to the file `jxl-for-lightroom.exe`
 3. Save the preset
 
+![image](https://user-images.githubusercontent.com/6566207/175049463-d46b3ab2-7e91-4601-b7cc-45fbc5b342c0.png)
+
+
 ## How does it work?
 
-This project include the executable from the project https://github.com/libjxl/libjxl, which will be extracted at program start.
+This project includes the executable from the project https://github.com/libjxl/libjxl, which will be extracted at program start.
 Lightroom call this tool with all files to convert, then a webpage is opened in the standard browser.
 On the webpage you can select parameters for the encoding to jpegxl and start the encoding.
 
