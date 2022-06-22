@@ -133,13 +133,17 @@ func getFreeTcpPort() int {
 	port := 49152
 
 	for i := 0; i < 24; i++ {
-		listener, err := net.Listen("tcp", fmt.Sprintf(":%v", port))
-		if err == nil {
-			listener.Close()
-			return port
-		} else {
-			port++
+
+		if a, err := net.ResolveTCPAddr("tcp", fmt.Sprintf("localhost:%v", port)); err == nil {
+			var l *net.TCPListener
+			if l, err = net.ListenTCP("tcp", a); err == nil {
+				defer l.Close()
+				port := l.Addr().(*net.TCPAddr).Port
+
+				return port
+			}
 		}
+		port++
 	}
 
 	panic("NOT FREE PORT TO START SERVER")
