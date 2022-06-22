@@ -27,6 +27,7 @@ type Ui interface {
 }
 type ui struct {
 	Files             []File
+	version           string
 	converter         converter.Converter
 	config            config.Config
 	isBusy            bool
@@ -38,6 +39,7 @@ type ui struct {
 
 type PageData struct {
 	PageTitle           string
+	Version             string
 	Quality             string
 	LosslessTranscoding bool
 	Effort              string
@@ -54,13 +56,21 @@ type File struct {
 func (ui ui) HomeHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(r.RequestURI)
 
+	c := 0
+	for _, f := range ui.Files {
+		if f.CanConvert {
+			c++
+		}
+	}
+
 	data := PageData{
 		PageTitle:           "jxl for lightroom",
+		Version:             ui.version,
 		Files:               ui.Files,
 		Effort:              fmt.Sprintf("%v", ui.config.GetEffort()),
 		Quality:             fmt.Sprintf("%v", ui.config.GetQuality()),
 		LosslessTranscoding: ui.config.GetLosslessTranscoding(),
-		TotalValidImages:    fmt.Sprintf("%d", len(ui.Files)),
+		TotalValidImages:    fmt.Sprintf("%d", c),
 	}
 
 	t, err := template.ParseFS(content, "assets/index.html")
@@ -193,8 +203,9 @@ func (ui *ui) ShowDialog(files []string) error {
 	return nil
 }
 
-func NewUi(c converter.Converter, cfg config.Config) Ui {
+func NewUi(c converter.Converter, cfg config.Config, v string) Ui {
 	u := &ui{
+		version:        v,
 		converter:      c,
 		config:         cfg,
 		progress:       make(chan int),

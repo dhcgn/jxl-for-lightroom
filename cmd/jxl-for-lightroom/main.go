@@ -23,7 +23,7 @@ func main() {
 	c := converter.NewConvertor()
 	cfg := config.NewConfig()
 
-	u := ui.NewUi(c, cfg)
+	u := ui.NewUi(c, cfg, Version)
 	err := u.ShowDialog(os.Args[1:])
 
 	if err != nil {

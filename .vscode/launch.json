@@ -13,6 +13,7 @@
                 "C:\\temp\\test\\LargeSample_32b.png",
                 "C:\\temp\\test\\LargeSample_24b.png",
                 "C:\\temp\\test\\LargeSample_8b.png",
+                "C:\\temp\\test\\LargeSample.pdn",
             ],
             "request": "launch",
             "mode": "auto",
